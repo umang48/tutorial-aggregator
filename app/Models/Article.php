@@ -11,7 +11,8 @@ class Article extends Model
     // 1. Allow these columns to be saved in bulk
    protected $fillable = [
     'devto_id', 'title', 'url', 'description', 
-    'tags', 'public_reactions_count', 'published_at', 'is_bookmarked' // Added here
+    'tags', 'public_reactions_count', 'published_at', 
+    'is_bookmarked', 'draft_outline' // Added draft_outline
 ];
 
     // 2. Automatically cast the JSON tags column into a PHP Array
@@ -33,4 +34,6 @@ class Article extends Model
             'tags' => implode(', ', $this->tags ?? []),
         ];
     }
+
+    
 }

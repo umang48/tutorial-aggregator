@@ -10,7 +10,6 @@ class ArticleController extends Controller
     public function index(Request $request)
     {
         if ($request->has('bookmarked')) {
-            // Show only bookmarked articles
             $articles = Article::where('is_bookmarked', true)->latest('published_at')->paginate(10);
         } elseif ($request->filled('search')) {
             $articles = Article::search($request->search)->paginate(10);
@@ -25,6 +24,19 @@ class ArticleController extends Controller
     {
         $article->update(['is_bookmarked' => !$article->is_bookmarked]);
         
-        return back(); // Send the user back to the page they were on
+        return back();
+    }
+
+    public function saveDraft(Request $request, Article $article)
+    {
+        $request->validate([
+            'draft_outline' => 'nullable|string'
+        ]);
+
+        $article->update([
+            'draft_outline' => $request->draft_outline
+        ]);
+        
+        return back();
     }
 }
