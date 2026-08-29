@@ -9,14 +9,22 @@ class ArticleController extends Controller
 {
     public function index(Request $request)
     {
-        // If the user types in the search bar, use Laravel Scout
-        if ($request->filled('search')) {
+        if ($request->has('bookmarked')) {
+            // Show only bookmarked articles
+            $articles = Article::where('is_bookmarked', true)->latest('published_at')->paginate(10);
+        } elseif ($request->filled('search')) {
             $articles = Article::search($request->search)->paginate(10);
         } else {
-            // Otherwise, show the latest trending articles
             $articles = Article::latest('published_at')->paginate(10);
         }
 
         return view('articles.index', compact('articles'));
+    }
+
+    public function toggleBookmark(Article $article)
+    {
+        $article->update(['is_bookmarked' => !$article->is_bookmarked]);
+        
+        return back(); // Send the user back to the page they were on
     }
 }
